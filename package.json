@@ -1,0 +1,38 @@
+{
+  "name": "graphin-vue",
+  "version": "0.0.1",
+  "description": "Vue version of @antv/graphin",
+  "main": "index.js",
+  "scripts": {
+    "start": " node --max_old_space_size=8192 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --env.NODE_ENV=development",
+    "build": "rimraf src/dist && node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --hot --env.NODE_ENV=production"
+  },
+  "repository": "https://github.com/Kacxxia/graphin-vue.git",
+  "author": "Kacxxia <kacxxia@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.5",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "babel-loader": "^8.1.0",
+    "babel-preset-vue": "^2.0.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "html-webpack-plugin": "^4.0.4",
+    "rimraf": "^3.0.2",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "vue-loader": "^15.9.1",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "vue": "^2.6.11"
+  }
+}
