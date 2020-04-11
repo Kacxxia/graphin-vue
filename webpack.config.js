@@ -44,6 +44,9 @@ module.exports = env => {
     },
     resolve: {
       extensions: ['*', '.ts', '.js', '.vue'],
+      alias: {
+        '@': 'src/'
+      }
     },
     devtool: 'eval-source-map',
     devServer: {
