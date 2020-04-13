@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import { Graph as IGraph, Node, Edge, Item } from '@/common/interfaces/index'
+import { Graph as IGraph, Node, Edge, Item } from './common/interfaces/index'
 import Graphin from './Graphin.vue';
 import Utils from './utils';
 import Layout from './layout';

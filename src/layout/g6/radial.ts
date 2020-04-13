@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { LayoutOptionBase, Data } from '../../types';
-import { Layout } from '@/common/interfaces'
+import { Layout } from '../../common/interfaces'
 
 export interface RadialLayoutOption extends LayoutOptionBase {
   /** 中心点坐标 */

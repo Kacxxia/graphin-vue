@@ -10,7 +10,7 @@ import {
   ShapeStyle,
   EdgeConfig,
   GShapeType
-} from '@/common/interfaces/index'
+} from './common/interfaces/index'
 import ForceLayout from '@/layout/force/ForceLayout';
 import { LayoutOption } from '@/controller/layout/defaultLayouts';
 import Graphin from './Graphin.vue';

@@ -1,12 +1,11 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = env => {
   return {
     entry: {
-      // bundle: './src/index.ts',
-      dev: './src/app.js'
+      bundle: './src/index.ts',
     },
     mode: env.NODE_ENV,
     module: {
@@ -22,7 +21,7 @@ module.exports = env => {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/env', 'babel-preset-vue'],
-            plugins: [['@babel/plugin-proposal-class-properties', { loose: true }]],
+            plugins: [['@babel/plugin-proposal-class-properties', { loose: true }], '@babel/plugin-proposal-optional-chaining'],
           },
         },
         {
@@ -35,25 +34,40 @@ module.exports = env => {
           loader: 'ts-loader',
           exclude: /node_modules/,
           options: {
+            transpileOnly: true,
             compilerOptions: {
               declaration: false,
             },
           },
+        },
+        {
+          test: /\.css$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        },
+        {
+          test: /\.less$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+            },
+            {
+              loader: 'css-loader', // translates CSS into CommonJS
+            },
+            {
+              loader: 'less-loader', // compiles Less to CSS
+            },
+          ],
+          sideEffects: true,
         }
       ]
     },
     resolve: {
       extensions: ['*', '.ts', '.js', '.vue'],
       alias: {
-        '@': 'src/'
+        '@': '/src/'
       }
     },
-    devtool: 'eval-source-map',
-    devServer: {
-      contentBase: path.join(__dirname, 'src', 'public'),
-      publicPath: '/',
-      hot: true
-    },
+    devtool: 'cheap-module-source-map',
     output: {
       library: 'graphin-vue',
       libraryTarget: 'umd',
@@ -62,17 +76,13 @@ module.exports = env => {
       filename: 'graphin-vue.min.js',
     },
     plugins: [
-      new VueLoaderPlugin(),
-      new HtmlWebpackPlugin({
-        title: 'example',
-        template: './src/public/index.html',
-        chunks: ['dev'],
-      })
+      new MiniCssExtractPlugin(),
+      new VueLoaderPlugin()
     ],
     externals: [
       {
         vue: 'Vue',
-        lodash: '_'
+        lodash: 'lodash'
       },
       (context, request, callback) => {
         if (request === 'lodash') {

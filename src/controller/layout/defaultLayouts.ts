@@ -207,7 +207,7 @@ const defaultLayouts = (graphin: Graphin, prevProps: GraphinProps) => {
             layouts.find((item) => {
               return item.name === presetName;
             }) || layouts[5]; // concentric
-          presetData = presetLayout?.layout(data, presetOptions as ForceLayoutOptions).data as Data;
+          presetData = presetLayout ? presetLayout.layout(data, presetOptions as ForceLayoutOptions).data as Data : {} as Data;
         }
 
         const force = forceLayout(presetData, layouOpts as ForceLayoutOptions);

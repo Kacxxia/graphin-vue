@@ -2,10 +2,10 @@
   <div id="graphin-container">
     <div
       data-testid="custom-element"
-      className="graphin-core"
+      class="graphin-core"
       ref='graphDOM'
     />
-    <div className="graphin-components">
+    <div class="graphin-components">
       <template v-if="isGraphReady">
         <slot></slot>
       </template>
@@ -44,22 +44,28 @@ import shallowEqual from './utils/shallowEqual';
 
 @Component({
   name: 'GraphinVue',
-  created () {
+  created() {
     this.history = new HistoryController()
   },
   mounted () {
     const { data } = this.$props;
+    // debugger
+    this.graphDOM = this.$refs.graphDOM
     // register props.extend and props.register
     const behaviorsMode = registerController(this.$props as GraphinProps);
+
     // init G6 instance
     const { instance, width, height, options } = initController(
       this.$props as GraphinProps,
       this.graphDOM as HTMLDivElement,
       behaviorsMode,
     );
+
     this.g6Options = options;
     this.graph = instance as GraphType;
+    this.history = new HistoryController()
     const { data: newData, forceSimulation } = layoutController(this.getContext(), { data });
+
     this.$data.forceSimulation = forceSimulation!;
 
     this.setState(
@@ -70,6 +76,7 @@ import shallowEqual from './utils/shallowEqual';
         height,
         sdata: newData,
         forceSimulation,
+        // history: this.history
       },
       () => {
         this.renderGraphWithLifeCycle(true);
@@ -131,7 +138,7 @@ export default class Graphin extends Vue {
   clearEvents?: () => void
   getLayoutInfo () {}
 
-  setState = (option: { [key: string]: any }, callback?: Function) => {
+  setState (option: { [key: string]: any }, callback?: Function) {
     Object.keys(option).forEach(key => {
       if (Object.prototype.hasOwnProperty.call(this, key)) {
         this[key] = option[key]
@@ -146,7 +153,7 @@ export default class Graphin extends Vue {
     }
   }
 
-  rerenderGraph = (dataChanged: Boolean, prevProps: GraphinProps) => {
+  rerenderGraph(dataChanged: Boolean, prevProps: GraphinProps) {
     let { sdata: currentData } = this.state;
     if (dataChanged) {
       const { data } = this.$props
@@ -166,9 +173,8 @@ export default class Graphin extends Vue {
     );
   }
 
-  getApis = () => {
-    const context = this.getContext();
-    return apisController(context);
+  getApis() {
+    return apisController(this);
   };
 
   getHistoryInfo = () => {
@@ -182,7 +188,7 @@ export default class Graphin extends Vue {
 
     this.setState(
       {
-        data: { nodes: [], edges: [] },
+        sdata: { nodes: [], edges: [] },
 
         forceSimulation: null,
         graphSave: null,
@@ -198,11 +204,11 @@ export default class Graphin extends Vue {
     this.clearEvents = eventController(this.getContext()).clear;
   }
 
-  getContext = () => {
+  getContext() {
     return this;
   }
 
-  renderGraphWithLifeCycle = (fristRender: boolean) => {
+  renderGraphWithLifeCycle(fristRender: boolean) {
     const { sdata: data } = this;
     this.graph!.changeData(cloneDeep(data));
     this.graph!.emit('afterchangedata');
@@ -212,14 +218,14 @@ export default class Graphin extends Vue {
     }
   };
 
-  stopForceSimulation = () => {
+  stopForceSimulation() {
     const { forceSimulation } = this.state;
     if (forceSimulation) {
       forceSimulation.stop();
     }
   };
 
-  handleSaveHistory = () => {
+  handleSaveHistory() {
     const currentState = {
       isGraphReady: this.isGraphReady,
       width: this.width,
@@ -232,7 +238,7 @@ export default class Graphin extends Vue {
     this.history.save(currentState);
   };
 
-  handleUndo = () => {
+  handleUndo() {
     this.stopForceSimulation();
 
     const prevState = this.history.undo();
@@ -246,7 +252,7 @@ export default class Graphin extends Vue {
     }
   };
 
-  handleRedo = () => {
+  handleRedo() {
     this.stopForceSimulation();
 
     const nextState = this.history.redo();
@@ -260,7 +266,7 @@ export default class Graphin extends Vue {
     }
   };
 
-  renderGraph = (data: Data) => {
+  renderGraph(data: Data) {
     this.graph!.changeData(cloneDeep(data));
     /**
      * TODO 移除 `afterchangedata` Event
@@ -269,7 +275,7 @@ export default class Graphin extends Vue {
     this.graph!.emit('afterchangedata');
   };
 
-  renderGraphByHistory = () => {
+  renderGraphByHistory() {
     const { forceSimulation, graphSave } = this;
     if (forceSimulation) {
       forceSimulation.restart(graphSave.nodes || [], this.graph!);
@@ -279,3 +285,21 @@ export default class Graphin extends Vue {
 
 }
 </script>
+<style lang="less">
+.graphin-core {
+    height: 100%;
+    width: 100%;
+    min-height: 500px;
+    background: #fff;
+}
+
+@font-face {
+    font-family: 'graphin'; /* project id 1522921 */
+    src: url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.eot');
+    src: url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.eot?#iefix') format('embedded-opentype'),
+        url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.woff2') format('woff2'),
+        url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.woff') format('woff'),
+        url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.ttf') format('truetype'),
+        url('//at.alicdn.com/t/font_1522921_m3irqw8ynx.svg#graphin') format('svg');
+}
+</style>
