@@ -12,7 +12,7 @@ declare module "*.vue" {
   } from '@/types';
   import HistoryController from '@/controller/history';
 
-  export default interface AVue extends Vue {
+  export default class AVue extends Vue {
     graphDOM: HTMLDivElement | null
     graph?: GraphType;
 

@@ -2,10 +2,11 @@
   "name": "graphin-vue",
   "version": "0.0.1",
   "description": "Vue version of @antv/graphin",
-  "main": "index.js",
+  "main": "./dist/graphin-vue.min",
+  "types": "./dist/index.d",
   "scripts": {
     "start": " node --max_old_space_size=8192 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --env.NODE_ENV=development --config webpack.config.dev.js",
-    "build": "rimraf src/dist && node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --hot --env.NODE_ENV=production"
+    "build": "rimraf dist && node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --hot --env.NODE_ENV=production && tsc --outDir dist"
   },
   "repository": "https://github.com/Kacxxia/graphin-vue.git",
   "author": "Kacxxia <kacxxia@gmail.com>",
@@ -43,5 +44,8 @@
     "svg2marker": "^0.1.3",
     "vue": "^2.6.11",
     "vue-property-decorator": "^8.4.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

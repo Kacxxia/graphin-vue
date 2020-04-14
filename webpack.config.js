@@ -71,7 +71,7 @@ module.exports = env => {
     output: {
       library: 'graphin-vue',
       libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'src', 'dist'),
+      path: path.resolve(__dirname, 'dist'),
       publicPath: '/',
       filename: 'graphin-vue.min.js',
     },

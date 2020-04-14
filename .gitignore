@@ -1,8 +1,12 @@
 node_modules
 
+# lock
+package-lock.json
 # yarn-lock
 yarn.lock
 
 
 # ignore dist files
 .vscode/
+
+dist

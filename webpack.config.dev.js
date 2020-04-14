@@ -72,14 +72,14 @@ module.exports = env => {
     devtool: 'inline-source-map',
     devServer: {
       port: 8080,
-      contentBase: path.join(__dirname, 'src', 'public'),
+      contentBase: path.join(__dirname, 'public'),
       publicPath: '/',
       hot: true
     },
     output: {
       library: 'graphin-vue',
       libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'src', 'dist'),
+      path: path.resolve(__dirname, 'dist'),
       publicPath: '/',
       filename: 'graphin-vue.min.js',
     },
@@ -88,7 +88,7 @@ module.exports = env => {
       new VueLoaderPlugin(),
       new HtmlWebpackPlugin({
         title: 'example',
-        template: './src/public/index.html',
+        template: './public/index.html',
         chunks: ['dev'],
       })
     ]
