@@ -1,7 +1,6 @@
 <template>
   <div id="graphin-container">
     <div
-      data-testid="custom-element"
       class="graphin-core"
       ref='graphDOM'
     />
@@ -49,7 +48,6 @@ import shallowEqual from './utils/shallowEqual';
   },
   mounted () {
     const { data } = this.$props;
-    // debugger
     this.graphDOM = this.$refs.graphDOM
     // register props.extend and props.register
     const behaviorsMode = registerController(this.$props as GraphinProps);

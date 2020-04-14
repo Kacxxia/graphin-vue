@@ -188,7 +188,6 @@ const defaultLayouts = (graphin: Graphin, prevProps: GraphinProps) => {
           /** 是否开启动画 */
           animation: true,
         };
-        debugger
         const layouOpts = { ...defaultOptions, ...options };
         let { name: presetName, options: presetOptions = {} } = layouOpts.preset;
 
