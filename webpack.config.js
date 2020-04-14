@@ -7,7 +7,8 @@ module.exports = env => {
     entry: {
       bundle: './src/index.ts',
     },
-    mode: env.NODE_ENV,
+    // mode: env.NODE_ENV,
+    mode: 'development',
     module: {
       rules: [
         {
