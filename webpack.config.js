@@ -81,7 +81,7 @@ module.exports = env => {
     ],
     externals: [
       {
-        vue: 'Vue',
+        vue: 'vue',
         lodash: 'lodash'
       },
       (context, request, callback) => {
