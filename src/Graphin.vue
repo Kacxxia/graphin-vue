@@ -92,10 +92,7 @@ import shallowEqual from './utils/shallowEqual';
   }
 })
 export default class Graphin extends Vue {
-  @Prop(Object) data: Data = {
-    nodes: [],
-    edges: []
-  }
+  @Prop(Object) data: Data
   @Prop(Object) options?: Partial<ExtendedGraphOptions>
   @Prop(Object) layout?: Layout
   @Prop(Object) extend?: GraphinPropsExtend

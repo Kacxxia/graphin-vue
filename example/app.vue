@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-// import Graphin from '../src/dist/graphin-vue.min'
+// import Graphin from '../dist/graphin-vue.min'
 import Graphin from '../src/Graphin.vue'
 import extend from './Extend'
 export default {
