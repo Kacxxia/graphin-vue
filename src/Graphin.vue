@@ -151,7 +151,7 @@ export default class Graphin extends Vue {
   }
 
   rerenderGraph(dataChanged: Boolean, prevProps: GraphinProps) {
-    let { sdata: currentData } = this.state;
+    let { sdata: currentData } = this;
     if (dataChanged) {
       const { data } = this.$props
       currentData = data
@@ -216,7 +216,7 @@ export default class Graphin extends Vue {
   };
 
   stopForceSimulation() {
-    const { forceSimulation } = this.state;
+    const { forceSimulation } = this;
     if (forceSimulation) {
       forceSimulation.stop();
     }
