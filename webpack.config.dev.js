@@ -1,14 +1,15 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = env => {
   return {
     entry: {
-      bundle: './src/index.ts',
+      dev: './example/app.js' 
     },
-    // mode: env.NODE_ENV,
     mode: 'development',
+    // mode: env.NODE_ENV,
     module: {
       rules: [
         {
@@ -38,7 +39,7 @@ module.exports = env => {
             transpileOnly: true,
             compilerOptions: {
               declaration: false,
-            },
+            }
           },
         },
         {
@@ -68,7 +69,13 @@ module.exports = env => {
         '@': '/src/'
       }
     },
-    devtool: 'cheap-module-source-map',
+    devtool: 'inline-source-map',
+    devServer: {
+      port: 8080,
+      contentBase: path.join(__dirname, 'public'),
+      publicPath: '/',
+      hot: true
+    },
     output: {
       library: 'graphin-vue',
       libraryTarget: 'umd',
@@ -78,35 +85,12 @@ module.exports = env => {
     },
     plugins: [
       new MiniCssExtractPlugin(),
-      new VueLoaderPlugin()
-    ],
-    externals: [
-      {
-        vue: 'vue',
-        lodash: 'lodash'
-      },
-      (context, request, callback) => {
-        if (request === 'lodash') {
-          return callback(null, 'lodash');
-        }
-        if (/lodash\//.test(request)) {
-            // lodash/isArray
-            const paths = request.split('/');
-            // lodash or lodash-es
-            paths[0] = 'lodash';
-            // lodash.isArray
-            return callback(null, paths.join('.'));
-        }
-        if (/lodash\./.test(request)) {
-            // lodash.debounce
-            const paths = request.split('.');
-            // lodash or lodash-es
-            paths[0] = 'lodash';
-            // lodash.debounce
-            return callback(null, paths.join('.'));
-        }
-        callback();
-        }
-    ],
+      new VueLoaderPlugin(),
+      new HtmlWebpackPlugin({
+        title: 'example',
+        template: './public/index.html',
+        chunks: ['dev'],
+      })
+    ]
   }
 }
