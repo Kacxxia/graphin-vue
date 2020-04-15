@@ -114,14 +114,21 @@ export default class Graphin extends Vue {
 
   g6Options?: Partial<ExtendedGraphOptions>
 
-  @Watch('data')
-  ondataChanged(val: Data, oldVal: Data) {
+  @Watch('data.nodes')
+  onDataNodesChanged() {
     const p: GraphinProps = {
-      data: oldVal
+      data: this.$props.data
     }
     this.rerenderGraph(true, p)
   }
-  @Watch('layout')
+  @Watch('data.edges')
+  onDataEdgesChanged() {
+    const p: GraphinProps = {
+      data: this.$props.data
+    }
+    this.rerenderGraph(true, p)
+  }
+  @Watch('layout', { deep: true })
   onLayoutChanged(val: Layout, oldVal: Layout) {
     const p: GraphinProps = {
       data: this.sdata,
