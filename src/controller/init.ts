@@ -1,5 +1,6 @@
-import G6, { Graph as GraphType } from '@antv/g6';
-import { GraphinProps, ExtendedGraphOptions } from '../types';
+import G6 from '@antv/g6';
+import { GraphinProps, ExtendedGraphOptions, CommonGraph as GraphType } from '../types';
+import { ILayoutOptions } from '../common/interfaces' 
 
 export interface BehaviorModeItem {
   type: string;
@@ -20,6 +21,26 @@ export const initGraphAfterRender = (props: GraphinProps, graphDOM: HTMLDivEleme
   // 缩放
   if (zoom) instance.zoomTo(zoom, pan!);
 };
+
+const getTreeLayout = (props: GraphinProps): ILayoutOptions => {
+  const defaultLayout: ILayoutOptions = {
+    type: 'dendrogram'
+  }
+  const builtinTreeLayouts = ['dendrogram', 'compactBox', 'indented', 'mindmap']
+  if (props.layout) {
+    if (builtinTreeLayouts.includes(props.layout.name)) {
+      let options = {}
+      if (props.layout.options) {
+        options = { ...props.layout.options }
+      }
+      return {
+        type: props.layout.name,
+        ...options
+      }
+    }
+  }
+  return defaultLayout
+}
 
 const initGraph = (props: GraphinProps, graphDOM: HTMLDivElement, behaviorsMode: BehaviorsMode) => {
   const { clientWidth, clientHeight } = graphDOM;
@@ -126,14 +147,24 @@ const initGraph = (props: GraphinProps, graphDOM: HTMLDivElement, behaviorsMode:
         ...c.options,
       };
     });
-1
-  const instance: GraphType = new G6.Graph({
+  let instance: GraphType
+  const commonOptions = {
     ...g6Options,
     modes: {
       ...behaviorsMode, // Add multiple G6 behavior modes
       default: [...defaultModes, ...modes!.default!, ...behaviorsMode.default],
     },
-  });
+  }
+  if (props.graphType === 'TreeGraph') {
+    instance = new G6.TreeGraph({
+      ...commonOptions,
+      layout: getTreeLayout(props)
+    })
+  } else {
+    instance = new G6.Graph({
+      ...commonOptions
+    })
+  }
 
   // 平移
   if (pan) instance.moveTo(pan.x, pan.y);

@@ -1,27 +1,32 @@
 import { VNodeChildren } from 'vue'
 import {
   Graph as IGraph,
+  TreeGraph as ITreeGraph,
   GraphOptions,
   Canvas as ICanvas,
   Node as INode,
   Edge as IEdge,
   GraphData,
+  TreeGraphData,
   NodeConfig,
   ShapeStyle,
   EdgeConfig,
-  GShapeType
+  GShapeType,
+  Group
 } from './common/interfaces/index'
 import ForceLayout from '@/layout/force/ForceLayout';
 import { LayoutOption } from '@/controller/layout/defaultLayouts';
 import Graphin from './Graphin.vue';
 
 export {
-  NodeConfig
+  NodeConfig,
+  Group
 }
 
 /** export types  */
 export type G6Type = any; // eslint-disable-line
 export type Graph = IGraph;
+export type CommonGraph = IGraph | ITreeGraph;
 
 export type GraphNode = INode;
 export type GraphEdge = IEdge;
@@ -169,6 +174,8 @@ export interface Data extends GraphData {
   nodes: Node[],
   edges: Edge[]
 }
+export interface TreeData extends TreeGraphData {}
+export type CommonData = Data | TreeData
 export interface Layout {
   /** 布局名称，必选 */
   name: string;
@@ -236,7 +243,7 @@ export interface ExtendLayout {
     data: Data,
     options: LayoutOption,
   ) => {
-    data: Data;
+    data: CommonData;
     forceSimulation?: ForceSimulation;
   };
 }
@@ -313,7 +320,7 @@ export interface GraphinState {
   isGraphReady: boolean;
   width: number;
   height: number;
-  data: Data;
+  data: CommonData;
   graph?: GraphType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   graphSave?: any;

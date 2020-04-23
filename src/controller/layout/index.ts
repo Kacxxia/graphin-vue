@@ -1,5 +1,5 @@
 import dataChecking from './dataChecking';
-import { GraphinProps, Data, ForceSimulation, ExtendLayout } from '../../types';
+import { GraphinProps, Data, ForceSimulation, ExtendLayout, CommonData } from '../../types';
 import Graphin from '../../Graphin.vue';
 import defaultLayouts, { LayoutOption } from './defaultLayouts';
 
@@ -27,7 +27,7 @@ const layoutController = (
   graphin: Graphin,
   params: LayoutParams,
 ): {
-  data: Data;
+  data: CommonData;
   forceSimulation?: ForceSimulation;
 } => {
   const { $props: props, forceSimulation, graph } = graphin;
@@ -95,7 +95,6 @@ const layoutController = (
       };
     },
   };
-
   return matchLayout.layout(data, options as LayoutOption);
 };
 

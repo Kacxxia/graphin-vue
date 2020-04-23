@@ -32,14 +32,20 @@ import {
   GraphType,
   ForceSimulation,
   Data,
+  CommonData,
   Layout,
   ExtendLayout,
   GraphinPropsExtend,
-  GraphinPropsRegister
+  GraphinPropsRegister,
+  Group
 } from './types';
 
 /** utils */
 import shallowEqual from './utils/shallowEqual';
+
+function plainData<T>(arg: T): T {
+  return JSON.parse(JSON.stringify(arg))
+}
 
 @Component({
   name: 'GraphinVue',
@@ -51,7 +57,7 @@ import shallowEqual from './utils/shallowEqual';
     this.graphDOM = this.$refs.graphDOM
     // register props.extend and props.register
     const behaviorsMode = registerController(this.$props as GraphinProps);
-
+    this.behaviorsMode = behaviorsMode
     // init G6 instance
     const { instance, width, height, options } = initController(
       this.$props as GraphinProps,
@@ -62,10 +68,14 @@ import shallowEqual from './utils/shallowEqual';
     this.g6Options = options;
     this.graph = instance as GraphType;
     this.history = new HistoryController()
+
     const { data: newData, forceSimulation } = layoutController(this.getContext(), { data });
-
-    this.$data.forceSimulation = forceSimulation!;
-
+    if (this.$props.layout && this.$props.layout.name) {
+      this.currentLayout = this.$props.layout.name
+    } else {
+      this.currentLayout = 'concentric'
+    }
+    this.centerView()
     this.setState(
       {
         isGraphReady: true,
@@ -91,13 +101,14 @@ import shallowEqual from './utils/shallowEqual';
 })
 export default class Graphin extends Vue {
   @Prop(Object) data: Data
+  @Prop(String) graphType: 'Graph' | 'TreeGraph'
   @Prop(Object) options?: Partial<ExtendedGraphOptions>
   @Prop(Object) layout?: Layout
   @Prop(Object) extend?: GraphinPropsExtend
   @Prop(Object) register?: GraphinPropsRegister
 
   isGraphReady: boolean = false
-  sdata: Data = {
+  sdata: CommonData = {
     nodes: [],
     edges: []
   }
@@ -114,27 +125,61 @@ export default class Graphin extends Vue {
 
   g6Options?: Partial<ExtendedGraphOptions>
 
+  currentLayout: string
+
   @Watch('data.nodes')
   onDataNodesChanged() {
     const p: GraphinProps = {
       data: this.$props.data
     }
-    this.rerenderGraph(true, p)
+    this.rerenderGraph(p)
   }
   @Watch('data.edges')
   onDataEdgesChanged() {
     const p: GraphinProps = {
       data: this.$props.data
     }
-    this.rerenderGraph(true, p)
+    this.rerenderGraph(p)
   }
   @Watch('layout', { deep: true })
   onLayoutChanged(val: Layout, oldVal: Layout) {
     const p: GraphinProps = {
-      data: this.sdata,
+      data: this.$props.data,
       layout: oldVal
     }
-    this.rerenderGraph(false, p)
+
+    // 保证树图布局和普通布局的切换后的渲染由graphType的watcher执行
+    const builtinTreeLayouts = ['dendrogram', 'compactBox', 'indented', 'mindmap']
+    if ((builtinTreeLayouts.includes(this.currentLayout) && !builtinTreeLayouts.includes(val.name || 'concentric'))
+    || (!builtinTreeLayouts.includes(this.currentLayout) && builtinTreeLayouts.includes(val.name || 'concentric'))) {
+    } else {
+      this.rerenderGraph(p)
+    }
+    this.currentLayout = val.name || 'concentric'
+  }
+  @Watch('graphType')
+  onGraphTypeChanged() {
+    this.graph.destroy()
+    const { instance, width, height, options } = initController(
+      this.$props as GraphinProps,
+      this.graphDOM as HTMLDivElement,
+      this.behaviorsMode,
+    );
+    this.graph = instance as GraphType;
+
+    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: this.$props.data });
+
+    this.setState(
+      {
+        width,
+        height,
+        sdata: newData,
+        forceSimulation,
+      },
+      () => {
+        this.renderGraphWithLifeCycle();
+      },
+    );
   }
 
   clearEvents?: () => void
@@ -155,13 +200,8 @@ export default class Graphin extends Vue {
     }
   }
 
-  rerenderGraph(dataChanged: Boolean, prevProps: GraphinProps) {
-    let { sdata: currentData } = this;
-    if (dataChanged) {
-      const { data } = this.$props
-      currentData = data
-    }
-    const { data, forceSimulation } = layoutController(this.getContext(), { data: currentData, prevProps });
+  rerenderGraph(prevProps: GraphinProps) {
+    const { data, forceSimulation } = layoutController(this.getContext(), { data: prevProps.data, prevProps });
     this.forceSimulation = forceSimulation!;
     this.setState(
       {
@@ -213,6 +253,7 @@ export default class Graphin extends Vue {
   renderGraphWithLifeCycle(fristRender: boolean) {
     const { sdata: data } = this;
     this.graph!.changeData(cloneDeep(data));
+    this.centerView()
     this.graph!.emit('afterchangedata');
     this.handleSaveHistory();
     if (fristRender) {
@@ -268,8 +309,8 @@ export default class Graphin extends Vue {
     }
   };
 
-  renderGraph(data: Data) {
-    this.graph!.changeData(cloneDeep(data));
+  renderGraph(data: CommonData) {
+    this.graph!.changeData(plainData(data));
     /**
      * TODO 移除 `afterchangedata` Event
      * 此方法应该放到G6的changeData方法中去emit
@@ -284,6 +325,25 @@ export default class Graphin extends Vue {
     }
     this.renderGraph(graphSave);
   };
+
+  centerView() {
+    const { graph } = this;
+    const group: Group = graph.get('group');
+    const width: number = graph.get('width');
+    const height: number = graph.get('height');
+    group.resetMatrix();
+    const bbox = group.getCanvasBBox();
+    if (bbox.width === 0 || bbox.height === 0) return;
+    const viewCenter = {
+      x: width / 2,
+      y: height / 2
+    };
+    const groupCenter = {
+      x: bbox.x + bbox.width / 2,
+      y: bbox.y + bbox.height / 2,
+    };
+    graph.translate(viewCenter.x - groupCenter.x, viewCenter.y - groupCenter.y);
+  }
 
 }
 </script>

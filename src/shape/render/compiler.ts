@@ -1,6 +1,6 @@
 import G6 from '@antv/g6';
 import { ExtendNodeShape, ShapeComponent } from '../../types';
-import { GShape, Node, GGroup } from '@/common/interfaces';
+import { GShape, Node, Group } from '@/common/interfaces';
 
 const reset = (shapes: GShape[], shapeComponents: ShapeComponent[]) => {
   shapes.forEach((shape, index: number) => {
@@ -23,7 +23,7 @@ const compiler = (extendNodeShape: ExtendNodeShape) => {
   G6.registerNode(registerName, {
     // 自定义Shape
     // eslint-disable-next-line
-    draw(inputCfg: any, group: GGroup) {
+    draw(inputCfg: any, group: Group) {
       /** 得到用户返回的shapeComponents，然后拼装 */
 
       const { shapeComponents, state: RenderState } = renderNodeShape(inputCfg);

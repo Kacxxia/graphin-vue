@@ -27,7 +27,8 @@ const dataChecking = (data: Data = { nodes: [], edges: [] }): Data => {
     })
     .map((node) => {
       return {
-        shape: node.shape || 'CircleNode',
+        shape: node.type || node.shape || 'CircleNode',
+        type: node.type || node.shape || 'CircleNode',
         ...node,
         data: {
           ...node.data,
