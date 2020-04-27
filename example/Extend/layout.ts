@@ -38,7 +38,7 @@ function findRoot(data) {
   for (let i = 0, len = nodes.length; i < len; i++) {
     const node = nodes[i]
     const isSource = edges.some((edge) => {
-      return String(edge.source) === String(node.id)
+      return String(edge.target) === String(node.id)
     })
     if (!isSource) {
       return nodes[i]
@@ -66,8 +66,8 @@ function treefy(data: Data): CommonData {
     const source = nodeMap[edge.source]
     const target = nodeMap[edge.target]
     if (source && target) {
-      if (!target.children) target.children = []
-      target.children.push(source)
+      if (!source.children) source.children = []
+      source.children.push(target)
     }
   })
 

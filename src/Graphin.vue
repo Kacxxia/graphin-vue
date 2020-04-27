@@ -68,7 +68,6 @@ function plainData<T>(arg: T): T {
     this.g6Options = options;
     this.graph = instance as GraphType;
     this.history = new HistoryController()
-
     const { data: newData, forceSimulation } = layoutController(this.getContext(), { data });
     if (this.$props.layout && this.$props.layout.name) {
       this.currentLayout = this.$props.layout.name
@@ -94,6 +93,7 @@ function plainData<T>(arg: T): T {
   },
   beforeDestroy () {
     this.clearEvents!()
+    this.graph.destroy()
   },
   errorCaptured (error: Error, vm: Vue, info: String) {
     console.error('Catch component error: ', error, info)

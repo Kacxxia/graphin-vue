@@ -65,6 +65,7 @@ const forceLayout = (data: Data, options: ForceLayoutOptions): Return => {
         }
       });
       graph.refreshPositions();
+      graph.emit('render')
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
