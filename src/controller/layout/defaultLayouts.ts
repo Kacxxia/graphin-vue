@@ -201,7 +201,7 @@ const defaultLayouts = (graphin: Graphin, prevProps: GraphinProps) => {
         if (presetName === 'force') {
           presetData = TweakLayout(presetData, options as ForceLayoutOptions).data;
         } else {
-          const layouts = defaultLayouts(graphin, prevProps);
+          const layouts = [...options.defaultLayouts(graphin, prevProps), ...options.extendLayouts(graphin, prevProps)];
           const presetLayout =
             layouts.find((item) => {
               return item.name === presetName;

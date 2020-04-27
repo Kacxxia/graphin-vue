@@ -332,4 +332,6 @@ export interface LayoutOptionBase {
   width: number;
   height: number;
   data: Data;
+  defaultLayouts: (graphin: Graphin, prevProps: GraphinProps) => ExtendLayout[],
+  extendLayouts: (graphin: Graphin, prevProps: GraphinProps) => ExtendLayout[],
 }

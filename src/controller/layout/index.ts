@@ -83,6 +83,8 @@ const layoutController = (
     height,
     data,
     ...layout.options,
+    defaultLayouts,
+    extendLayouts: extendLayout
   };
 
   // 得到当前匹配的布局函数
