@@ -6,7 +6,9 @@
   "types": "./dist/index.d",
   "scripts": {
     "start": " node --max_old_space_size=8192 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --env.NODE_ENV=development --config webpack.config.dev.js",
-    "build": "rimraf dist && node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --hot --env.NODE_ENV=production && tsc --outDir dist"
+    "build": "rimraf dist && node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --env.NODE_ENV=production && tsc --outDir dist",
+    "dev": "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --env.NODE_ENV=development",
+    "watch": "nodemon --ignore public/ --ignore dist/ --ignore example/ --ignore random.txt -e js,vue,json --exec yarn run dev"
   },
   "repository": "https://github.com/Kacxxia/graphin-vue.git",
   "author": "Kacxxia <kacxxia@gmail.com>",
@@ -28,6 +30,7 @@
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.9.0",
+    "nodemon": "^2.0.3",
     "rimraf": "^3.0.2",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.2",
