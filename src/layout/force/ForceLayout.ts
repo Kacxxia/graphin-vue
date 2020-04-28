@@ -229,6 +229,7 @@ class ForceLayout {
       if (!node.data.layout) {
         node.data.layout = {};
       }
+      // @ts-ignore
       const degree = getDegree(node, this.edges);
       node.data.layout.degree = degree;
 
@@ -489,6 +490,7 @@ class ForceLayout {
       };
 
       const { leaf, single, others, center } = { ...defaultRadio, ...this.props.centripetalOptions };
+      // @ts-ignore
       const { x, y } = center(node);
       const centerVector = new Vector(x, y);
 
@@ -542,6 +544,7 @@ class ForceLayout {
    */
   addNode = (node: ForceNodeType) => {
     const { ignore } = this.props;
+    // @ts-ignore
     if (ignore && ignore(node)) {
       return;
     }
@@ -599,7 +602,7 @@ class ForceLayout {
           throw new TypeError(`invalid node name: ${e.target}`);
         }
         const attr = e.data;
-
+        // @ts-ignore
         const edge = new Edge(String(this.nextEdgeId++), node1, node2, attr);
         this.addEdge(edge);
       }
@@ -633,6 +636,7 @@ class ForceLayout {
     const changeNodePosition = (node: ForceNodeType) => {
       const vec = new Vector(node.x, node.y);
       // const mass = (node.layout && node.layout.force && node.layout.force.mass) || 100000;
+      // @ts-ignore
       const mass = this.getMass(node);
       this.nodePoints.set(node.id, new Point(vec, node.id, node.data, mass));
 
