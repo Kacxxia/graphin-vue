@@ -159,6 +159,7 @@ export default class Graphin extends Vue {
   }
   @Watch('graphType')
   onGraphTypeChanged() {
+    this.history.reset()
     this.graph.destroy()
     const { instance, width, height, options } = initController(
       this.$props as GraphinProps,
@@ -166,7 +167,7 @@ export default class Graphin extends Vue {
       this.behaviorsMode,
     );
     this.graph = instance as GraphType;
-
+    
     const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: this.$props.data });
 
     this.setState(
@@ -178,6 +179,7 @@ export default class Graphin extends Vue {
       },
       () => {
         this.renderGraphWithLifeCycle();
+        this.$emit('graph-inst-changed')
       },
     );
   }

@@ -14,6 +14,7 @@ module.exports = env => {
           test: /\.js$/,
           use: ['source-map-loader'],
           enforce: 'pre',
+          exclude: [path.resolve('node_modules')]
         },
         {
           test: /\.(js|jsx)$/,
