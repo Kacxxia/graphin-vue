@@ -167,9 +167,9 @@ export default class Graphin extends Vue {
       this.behaviorsMode,
     );
     this.graph = instance as GraphType;
-    
-    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: this.$props.data });
 
+    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: this.$props.data });
+    
     this.setState(
       {
         width,

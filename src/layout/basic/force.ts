@@ -41,6 +41,7 @@ const forceLayout = (data: Data, options: ForceLayoutOptions): Return => {
       if (isOptimization) {
         optimizeDrawing(graph as ExtendedGraph, false);
       }
+      graph.emit('forcelayoutdone')
       done(graph);
     },
     ...others,
