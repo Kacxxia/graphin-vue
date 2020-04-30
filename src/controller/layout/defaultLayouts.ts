@@ -202,9 +202,10 @@ const defaultLayouts = (graphin: Graphin, prevProps: GraphinProps) => {
           presetData = TweakLayout(presetData, options as ForceLayoutOptions).data;
         } else {
           const layouts = [...options.defaultLayouts(graphin, prevProps), ...options.extendLayouts(graphin, prevProps)];
+          const builtinTreeLayouts = ['dendrogram', 'compactBox', 'indented', 'mindmap']
           const presetLayout =
             layouts.find((item) => {
-              return item.name === presetName;
+              return !builtinTreeLayouts.includes(item.name) && item.name === presetName;
             }) || layouts[5]; // concentric
           presetData = presetLayout ? presetLayout.layout(data, presetOptions as ForceLayoutOptions).data as Data : {} as Data;
         }
