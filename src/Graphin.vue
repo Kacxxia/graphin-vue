@@ -68,7 +68,7 @@ function plainData<T>(arg: T): T {
     this.g6Options = options;
     this.graph = instance as GraphType;
     this.history = new HistoryController()
-    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data });
+    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: cloneDeep(data) });
     if (this.$props.layout && this.$props.layout.name) {
       this.currentLayout = this.$props.layout.name
     } else {
@@ -127,12 +127,43 @@ export default class Graphin extends Vue {
 
   currentLayout: string
 
+  @Watch('graphType')
+  onGraphTypeChanged() {
+    console.log('graphType changed')
+    this.history.reset()
+    this.graph.destroy()
+    const { instance, width, height, options } = initController(
+      this.$props as GraphinProps,
+      this.graphDOM as HTMLDivElement,
+      this.behaviorsMode,
+    );
+    this.graph = instance as GraphType;
+    console.log('graph-inst-changed')
+    this.$emit('graph-inst-changed')
+
+    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: cloneDeep(this.$props.data) });
+    
+    this.setState(
+      {
+        width,
+        height,
+        sdata: newData,
+        forceSimulation,
+      },
+      () => {
+        this.renderGraphWithLifeCycle();
+      },
+    );
+  }
+
   @Watch('data.nodes')
   onDataNodesChanged() {
     const p: GraphinProps = {
       data: this.$props.data
     }
-    this.rerenderGraph(p)
+    this.$nextTick(() => {
+      this.rerenderGraph(p)
+    })
   }
   @Watch('data.edges')
   onDataEdgesChanged() {
@@ -153,35 +184,11 @@ export default class Graphin extends Vue {
     if ((builtinTreeLayouts.includes(this.currentLayout) && !builtinTreeLayouts.includes(val.name || 'concentric'))
     || (!builtinTreeLayouts.includes(this.currentLayout) && builtinTreeLayouts.includes(val.name || 'concentric'))) {
     } else {
-      this.rerenderGraph(p)
+      this.$nextTick(() => {
+        this.rerenderGraph(p)
+      })
     }
     this.currentLayout = val.name || 'concentric'
-  }
-  @Watch('graphType')
-  onGraphTypeChanged() {
-    this.history.reset()
-    this.graph.destroy()
-    const { instance, width, height, options } = initController(
-      this.$props as GraphinProps,
-      this.graphDOM as HTMLDivElement,
-      this.behaviorsMode,
-    );
-    this.graph = instance as GraphType;
-
-    const { data: newData, forceSimulation } = layoutController(this.getContext(), { data: this.$props.data });
-    
-    this.setState(
-      {
-        width,
-        height,
-        sdata: newData,
-        forceSimulation,
-      },
-      () => {
-        this.renderGraphWithLifeCycle();
-        this.$emit('graph-inst-changed')
-      },
-    );
   }
 
   clearEvents?: () => void
@@ -203,7 +210,7 @@ export default class Graphin extends Vue {
   }
 
   rerenderGraph(prevProps: GraphinProps) {
-    const { data, forceSimulation } = layoutController(this.getContext(), { data: prevProps.data, prevProps });
+    const { data, forceSimulation } = layoutController(this.getContext(), { data: cloneDeep(prevProps.data), prevProps });
     this.forceSimulation = forceSimulation!;
     this.setState(
       {
