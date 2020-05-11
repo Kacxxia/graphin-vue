@@ -25,12 +25,14 @@ export default (name: string, value: string, item: Item) => {
   const model = item.get('model');
   /** 设置缓存 */
   const initStyle = cache(model);
+  const labelCfg = model.labelCfg
+  const defaultLabelFill = '#595959'
 
   /** 如果是false，则直接reset到初始状态 */
   if (!value || !name) {
     reset(shape, initStyle);
     if (textShape) {
-      textShape.originFill = textShape.originFill || textShape._attrs.fillStyle;
+      textShape.originFill = textShape.originFill || (labelCfg && labelCfg.style && labelCfg.style.fill) || defaultLabelFill;
       textShape.attr('fill', textShape.originFill);
     }
     return;
@@ -57,7 +59,7 @@ export default (name: string, value: string, item: Item) => {
   }
   if (name === 'highlight.dark') {
     if (textShape) {
-      textShape.originFill = textShape.originFill || textShape._attrs.fillStyle;
+      textShape.originFill = textShape.originFill || (labelCfg && labelCfg.style && labelCfg.style.fill) || defaultLabelFill;
       textShape.attr('fill', '#ccc');
     }
     shape.attr('lineWidth', 1);
