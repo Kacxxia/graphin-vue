@@ -39,7 +39,6 @@ const layoutController = (
 
   // 数据的校验
   const data = dataChecking(PropsData);
-
   // 重置forceSimulation
 
   if (forceSimulation) {

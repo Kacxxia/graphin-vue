@@ -238,6 +238,8 @@ export interface ExtendLayout {
   desc: string;
   /** antd icon */
   icon: string;
+  /** Graphin在切换到力导图布局时会先用前布局处理一下数据，用treelike字段区分，以防止从类树布局切换到正常布局时漏节点 */
+  treelike?: boolean;
   /** layout 布局执行函数 */
   layout: (
     data: Data,
